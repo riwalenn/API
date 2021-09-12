@@ -17,6 +17,20 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=UsersRepository::class)
  * @method string getUserIdentifier()
  */
+#[
+    ApiResource(
+        collectionOperations: [
+            'get' => ['normalization_context' => ['groups' => 'read']],
+            'post',
+        ],
+        itemOperations: [
+            'get' => ['normalization_context' => ['groups' => 'read']],
+            'put',
+            'delete',
+        ],
+        denormalizationContext: ['groups' => ['write'], 'enable_max_depth' => true,],
+        normalizationContext: ['groups' => ['read'], 'enable_max_depth' => true,],
+    )]
 class Users implements UserInterface
 {
     const ROLE_ADMIN = 'ROLE_ADMIN';

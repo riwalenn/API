@@ -2,32 +2,51 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\FavoritesPostsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * FavoritesPosts
  *
  * @ORM\Entity(repositoryClass=FavoritesPostsRepository::class)
  */
+#[
+    ApiResource(
+        collectionOperations: [
+            'get' => ['normalization_context' => ['groups' => 'read']],
+            'post',
+        ],
+        itemOperations: [
+            'get' => ['normalization_context' => ['groups' => 'read']],
+            'put',
+            'delete',
+        ],
+        denormalizationContext: ['groups' => ['write'], 'enable_max_depth' => true,],
+        normalizationContext: ['groups' => ['read'], 'enable_max_depth' => true,],
+    )]
 class FavoritesPosts
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read", "write"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="favoritesPosts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read"})
      */
     private $User;
 
     /**
      * @ORM\ManyToOne(targetEntity=Posts::class, inversedBy="favoritesPosts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read"})
      */
     private $Post;
 
