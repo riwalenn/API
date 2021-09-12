@@ -57,8 +57,7 @@ class Categories
     private $color;
 
     /**
-     * @ORM\OneToMany(targetEntity=Posts::class, mappedBy="relation", orphanRemoval=true)
-     * @Groups({"read"})
+     * @ORM\OneToMany(targetEntity=Posts::class, mappedBy="category", orphanRemoval=true)
      */
     private $posts;
 

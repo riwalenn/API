@@ -39,14 +39,12 @@ class FavoritesPosts
     /**
      * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="favoritesPosts")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"read"})
      */
     private $User;
 
     /**
      * @ORM\ManyToOne(targetEntity=Posts::class, inversedBy="favoritesPosts")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"read"})
      */
     private $Post;
 

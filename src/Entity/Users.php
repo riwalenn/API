@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -91,13 +92,11 @@ class Users implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Posts::class, mappedBy="author", orphanRemoval=true, cascade={"persist"})
-     * @Groups({"read"})
      */
     private $posts;
 
     /**
      * @ORM\OneToMany(targetEntity=FavoritesPosts::class, mappedBy="User", orphanRemoval=true)
-     * @Groups({"read"})
      */
     private $favoritesPosts;
 
