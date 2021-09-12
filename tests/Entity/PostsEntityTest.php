@@ -2,6 +2,8 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\Categories;
+use App\Entity\Posts;
 use App\Entity\Users;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -9,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Validator\ConstraintViolation;
 
-class UsersEntityTest extends KernelTestCase
+class PostsEntityTest extends KernelTestCase
 {
     private $entityManager;
 
@@ -37,10 +39,10 @@ class UsersEntityTest extends KernelTestCase
         $this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
     }
 
-    protected function assertHasErrors(Users $user, int $number = 0)
+    protected function assertHasErrors(Posts $posts, int $number = 0)
     {
         $kernel = self::bootKernel();
-        $errors = $kernel->getContainer()->get('validator')->validate($user);
+        $errors = $kernel->getContainer()->get('validator')->validate($posts);
         $messages = [];
         /** @var ConstraintViolation $error */
         foreach ($errors as $error) {
@@ -49,16 +51,17 @@ class UsersEntityTest extends KernelTestCase
         $this->assertCount($number, $errors, implode(', ', $messages));
     }
 
-    protected function getEntity(): Users
+    protected function getEntity(): Posts
     {
-        return (new Users())
-            ->setUsername('test')
-            ->setEmail('test@gmail.com')
-            ->setPassword('FM<gbO!SI)FD?ASy5"')
-            ->setRoles(array('ROLE_USER'))
-            ->setState(0)
-            ->setCreatedAt(new \DateTime('now'))
-            ->setModifiedAt(new \DateTime('now'));
+        return (new Posts())
+            ->setAuthor(new Users())
+            ->setTitle('simply dummy text of the printing')
+            ->setKicker('Lorem Ipsum is simply dummy text of the printing and typesetting industry.')
+            ->setContent('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi laoreet diam et enim dictum scelerisque pharetra ac dui. Integer id scelerisque dui. Vestibulum placerat nisi vel ligula finibus gravida. Donec lobortis nulla vitae ipsum venenatis luctus. Morbi commodo fermentum lectus, nec mattis ipsum maximus nec. Sed ultrices lobortis velit sit amet luctus. Sed sapien neque, faucibus at metus quis, sodales euismod diam.')
+            ->setState(1)
+            ->setCategory(new Categories())
+            ->setCreatedAt(new \DateTime())
+            ->setModifiedAt(new \DateTime());
     }
 
     public function testValidEntity()
@@ -68,61 +71,25 @@ class UsersEntityTest extends KernelTestCase
 
     public function testInstanceOfEntity()
     {
-        $this->assertInstanceOf(Users::class, $this->getEntity());
+        $this->assertInstanceOf(Posts::class, $this->getEntity());
     }
 
     public function testHasAttributesEntity()
     {
-        $this->assertObjectHasAttribute('username', $this->getEntity());
-        $this->assertObjectHasAttribute('email', $this->getEntity());
-        $this->assertObjectHasAttribute('password', $this->getEntity());
-        $this->assertObjectHasAttribute('roles', $this->getEntity());
+        $this->assertObjectHasAttribute('author', $this->getEntity());
+        $this->assertObjectHasAttribute('title', $this->getEntity());
+        $this->assertObjectHasAttribute('kicker', $this->getEntity());
+        $this->assertObjectHasAttribute('content', $this->getEntity());
         $this->assertObjectHasAttribute('state', $this->getEntity());
+        $this->assertObjectHasAttribute('category', $this->getEntity());
         $this->assertObjectHasAttribute('created_at', $this->getEntity());
         $this->assertObjectHasAttribute('modified_at', $this->getEntity());
     }
 
-    public function testInvalidBlankUsername()
-    {
-        $this->assertHasErrors($this->getEntity()->setUsername(''), 1);
-    }
-
-    public function testInvalidBlankEmail()
-    {
-        $this->assertHasErrors($this->getEntity()->setEmail(''), 1);
-    }
-
-    public function testInvalidEmail()
-    {
-        $this->assertHasErrors($this->getEntity()->setEmail('@gmail.com'), 1);
-    }
-
-    public function testInvalidBlankPassword()
-    {
-        $this->assertHasErrors($this->getEntity()->setPassword(''), 1);
-    }
-
-    public function testTypeArrayRoles()
-    {
-        $this->assertIsArray($this->getEntity()->getRoles());
-    }
-
     public function testGetId()
     {
-        $user = $this->entityManager->getRepository(Users::class)->findOneBy(['username' => 'user']);
-        $this->assertEquals($user->getId(), 6);
-    }
-
-    public function testUniqueUsername()
-    {
-        $user = $this->entityManager->getRepository(Users::class)->findOneBy(['username' => 'user']);
-        $this->assertFalse($user->getUsername() !== "user", "Cet username existe déjà.");
-    }
-
-    public function testUniqueEmail()
-    {
-        $user = $this->entityManager->getRepository(Users::class)->findOneBy(['email' => 'user@gmail.com']);
-        $this->assertFalse($user->getEmail() !== "user@gmail.com", "L'email existe déjà.");
+        $post = $this->entityManager->getRepository(Posts::class)->findOneBy(['id' => 1]);
+        $this->assertEquals($post->getId(), 1);
     }
 
     /**
