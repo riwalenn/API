@@ -2,40 +2,62 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CategoriesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * Categories
+ *
  * @ORM\Entity(repositoryClass=CategoriesRepository::class)
  */
+#[
+    ApiResource(
+        collectionOperations: [
+            'get' => ['normalization_context' => ['groups' => 'read']],
+            'post',
+        ],
+        itemOperations: [
+            'get' => ['normalization_context' => ['groups' => 'read']],
+            'put',
+            'delete',
+        ],
+        denormalizationContext: ['groups' => ['write'], 'enable_max_depth' => true,],
+        normalizationContext: ['groups' => ['read'], 'enable_max_depth' => true,],
+    )]
 class Categories
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read", "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read", "write"})
      */
     private $value;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read", "write"})
      */
     private $css;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read", "write"})
      */
     private $color;
 
     /**
-     * @ORM\OneToMany(targetEntity=Posts::class, mappedBy="relation", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Posts::class, mappedBy="category", orphanRemoval=true)
      */
     private $posts;
 

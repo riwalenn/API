@@ -37,7 +37,7 @@ class AppFixtures extends Fixture
             $user->setUsername($username)
                 ->setEmail($this->faker->email)
                 ->setPassword($this->passwordEncoder->encodePassword($user, $username))
-                ->setRoles(['ROLE_USER'])
+                ->setRoles([Users::ROLE_USER])
                 ->setState($this->faker->boolean)
                 ->setCreatedAt(new \DateTime())
                 ->setModifiedAt(new \DateTime());
@@ -51,7 +51,7 @@ class AppFixtures extends Fixture
         $user->setUsername('admin')
                 ->setEmail('admin@gmail.com')
                 ->setPassword($this->passwordEncoder->encodePassword($user, "admin"))
-                ->setRoles(['ROLE_ADMIN'])
+                ->setRoles([Users::ROLE_ADMIN])
                 ->setState(1)
                 ->setCreatedAt(new \DateTime())
                 ->setModifiedAt(new \DateTime());
@@ -64,7 +64,7 @@ class AppFixtures extends Fixture
         $user->setUsername('user')
             ->setEmail('user@gmail.com')
             ->setPassword($this->passwordEncoder->encodePassword($user, "user"))
-            ->setRoles(['ROLE_USER'])
+            ->setRoles([Users::ROLE_USER])
             ->setState(1)
             ->setCreatedAt(new \DateTime())
             ->setModifiedAt(new \DateTime());

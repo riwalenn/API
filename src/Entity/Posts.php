@@ -2,62 +2,90 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PostsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
+ * Posts
+ *
  * @ORM\Entity(repositoryClass=PostsRepository::class)
  */
+#[
+    ApiResource(
+        collectionOperations: [
+            'get' => ['normalization_context' => ['groups' => 'read']],
+            'post',
+        ],
+        itemOperations: [
+            'get' => ['normalization_context' => ['groups' => 'read']],
+            'put',
+            'delete',
+        ],
+        denormalizationContext: ['groups' => ['write'], 'enable_max_depth' => true,],
+        normalizationContext: ['groups' => ['read'], 'enable_max_depth' => true,],
+    )]
 class Posts
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read", "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read", "write"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read", "write"})
      */
     private $kicker;
 
     /**
      * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read", "write"})
      */
     private $author;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"read", "write"})
      */
     private $content;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"read", "write"})
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"read", "write"})
      */
     private $modified_at;
 
     /**
      * @ORM\ManyToOne(targetEntity=Categories::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read", "write"})
      */
     private $category;
 
     /**
      * @ORM\Column(type="smallint")
+     * @Groups({"write"})
      */
     private $state;
 
