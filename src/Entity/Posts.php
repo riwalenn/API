@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Posts
+ *
  * @ORM\Entity(repositoryClass=PostsRepository::class)
  */
 class Posts

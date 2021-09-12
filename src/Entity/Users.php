@@ -6,25 +6,35 @@ use App\Repository\UsersRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * Users
+ *
  * @ORM\Entity(repositoryClass=UsersRepository::class)
  * @method string getUserIdentifier()
  */
 class Users implements UserInterface
 {
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_AUTHOR = 'ROLE_AUTHOR';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read", "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
      * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur")
+     * @Groups({"read", "write"})
      */
     private $username;
 
@@ -32,6 +42,7 @@ class Users implements UserInterface
      * @ORM\Column(type="string", length=60)
      * @Assert\NotBlank(message="Vous devez saisir une adresse email.")
      * @Assert\Email(message="Le format de l'adresse n'est pas correcte.")
+     * @Groups({"read", "write"})
      */
     private $email;
 
@@ -43,11 +54,13 @@ class Users implements UserInterface
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"read", "write"})
      */
     private $modified_at;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"read", "write"})
      */
     private $created_at;
 
@@ -58,16 +71,19 @@ class Users implements UserInterface
 
     /**
      * @ORM\Column(type="smallint")
+     * @Groups({"read", "write"})
      */
     private $state;
 
     /**
      * @ORM\OneToMany(targetEntity=Posts::class, mappedBy="author", orphanRemoval=true, cascade={"persist"})
+     * @Groups({"read"})
      */
     private $posts;
 
     /**
      * @ORM\OneToMany(targetEntity=FavoritesPosts::class, mappedBy="User", orphanRemoval=true)
+     * @Groups({"read"})
      */
     private $favoritesPosts;
 
@@ -144,7 +160,11 @@ class Users implements UserInterface
 
     public function getRoles(): ?array
     {
-        return $this->roles;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = self::ROLE_USER;
+
+        return array_unique($roles);
     }
 
     public function setRoles(array $roles): self

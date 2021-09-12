@@ -55,7 +55,7 @@ class UsersEntityTest extends KernelTestCase
             ->setUsername('test')
             ->setEmail('test@gmail.com')
             ->setPassword('FM<gbO!SI)FD?ASy5"')
-            ->setRoles(array('ROLE_USER'))
+            ->setRoles(array(Users::ROLE_USER))
             ->setState(0)
             ->setCreatedAt(new \DateTime('now'))
             ->setModifiedAt(new \DateTime('now'));

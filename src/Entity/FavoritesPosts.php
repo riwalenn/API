@@ -6,6 +6,8 @@ use App\Repository\FavoritesPostsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * FavoritesPosts
+ *
  * @ORM\Entity(repositoryClass=FavoritesPostsRepository::class)
  */
 class FavoritesPosts
