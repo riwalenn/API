@@ -51,7 +51,7 @@ class Posts
     private $modified_at;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Categories::class, inversedBy="posts")
+     * @ORM\ManyToOne(targetEntity=Categories::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $category;
