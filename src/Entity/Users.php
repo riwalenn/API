@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UsersRepository::class)
@@ -22,17 +23,21 @@ class Users implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=40, unique=true)
+     * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur")
      */
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=60)
+     * @Assert\NotBlank(message="Vous devez saisir une adresse email.")
+     * @Assert\Email(message="Le format de l'adresse n'est pas correcte.")
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=64)
+     * @Assert\NotBlank(message="Vous devez saisir un mot de passe")
      */
     private $password;
 
@@ -57,7 +62,7 @@ class Users implements UserInterface
     private $state;
 
     /**
-     * @ORM\OneToMany(targetEntity=Posts::class, mappedBy="author", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Posts::class, mappedBy="author", orphanRemoval=true, cascade={"persist"})
      */
     private $posts;
 
