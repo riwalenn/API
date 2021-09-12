@@ -5,7 +5,6 @@ namespace App\DataFixtures;
 use App\Entity\Categories;
 use App\Entity\FavoritesPosts;
 use App\Entity\Posts;
-use App\Entity\Users;
 use App\Repository\CategoriesRepository;
 use App\Repository\UsersRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -23,6 +22,7 @@ class AppPostsFixtures extends Fixture implements DependentFixtureInterface
     {
         $this->userRepository = $usersRepository;
         $this->categoriesRepository = $categoriesRepository;
+        $this->faker = Factory::create('fr_FR');
     }
 
     /**
@@ -30,7 +30,6 @@ class AppPostsFixtures extends Fixture implements DependentFixtureInterface
      */
     public function load(ObjectManager $manager)
     {
-        $faker = Factory::create('fr_FR');
         $this->manager = $manager;
         $users = $this->userRepository->findAll();
 
@@ -62,14 +61,14 @@ class AppPostsFixtures extends Fixture implements DependentFixtureInterface
                 $category = array_rand(array_flip($array));
                 $id_category = $this->categoriesRepository->findOneBy(['id' => $category]);
                 $post = new Posts();
-                $post->setTitle($faker->sentence(6, true))
-                    ->setKicker($faker->sentence(9, true))
-                    ->setContent($faker->paragraph(2))
+                $post->setTitle($this->faker->sentence(6, true))
+                    ->setKicker($this->faker->sentence(9, true))
+                    ->setContent($this->faker->paragraph(2))
                     ->setAuthor($user)
                     ->setCategory($id_category)
                     ->setCreatedAt(new \DateTime())
                     ->setModifiedAt(new \DateTime())
-                    ->setState($faker->boolean);
+                    ->setState($this->faker->boolean);
 
                 $this->manager->persist($post);
 

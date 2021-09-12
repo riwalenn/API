@@ -16,6 +16,7 @@ class AppFixtures extends Fixture
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->passwordEncoder = $passwordEncoder;
+        $this->faker = Factory::create('fr_FR');
     }
 
     public function load(ObjectManager $manager)
@@ -30,15 +31,14 @@ class AppFixtures extends Fixture
 
     public function loadUsers()
     {
-        $faker = Factory::create('fr_FR');
         for ($i = 1; $i < 5; $i++) {
             $user = new Users();
-            $username = $faker->userName;
+            $username = $this->faker->userName;
             $user->setUsername($username)
-                ->setEmail($faker->email)
+                ->setEmail($this->faker->email)
                 ->setPassword($this->passwordEncoder->encodePassword($user, $username))
                 ->setRoles(['ROLE_USER'])
-                ->setState($faker->boolean)
+                ->setState($this->faker->boolean)
                 ->setCreatedAt(new \DateTime())
                 ->setModifiedAt(new \DateTime());
             $this->manager->persist($user);
