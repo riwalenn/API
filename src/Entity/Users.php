@@ -20,17 +20,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[
     ApiResource(
         collectionOperations: [
-            'get' => ['normalization_context' => ['groups' => 'read']],
-            'post',
+            'get' => ['normalization_context' => ['groups' => 'user:read']],
+            'post' => ['validation_groups' => ['user:write']],
         ],
         itemOperations: [
-            'get' => ['normalization_context' => ['groups' => 'read']],
+            'get' => ['normalization_context' => ['groups' => 'user:read']],
             'post',
             'put',
             'delete',
         ],
-        denormalizationContext: ['groups' => ['write'], 'enable_max_depth' => true,],
-        normalizationContext: ['groups' => ['read'], 'enable_max_depth' => true,],
+        denormalizationContext: ['groups' => ['user:write'], 'enable_max_depth' => true,],
+        normalizationContext: ['groups' => ['user:read'], 'enable_max_depth' => true,],
     )]
 class Users implements UserInterface
 {
@@ -49,9 +49,9 @@ class Users implements UserInterface
      * @ORM\Column(type="string", length=40, unique=true)
      */
     #[
-        Groups(['read', 'write']),
-        Assert\Length(min: 10, max: 40, minMessage: "Vous devez saisir au moins 10 caractères", maxMessage: "Vous ne pouvez saisir que 40 caractères au maximum.", groups: ['write']),
-        Assert\NotBlank(message: "Vous devez saisir un nom d'utilisateur", groups: ['write'])
+        Groups(['user:read', 'user:write']),
+        Assert\Length(min: 10, max: 40, minMessage: "Vous devez saisir au moins 10 caractères", maxMessage: "Vous ne pouvez saisir que 40 caractères au maximum.", groups: ['user:write']),
+        Assert\NotBlank(message: "Vous devez saisir un nom d'utilisateur", groups: ['user:write'])
     ]
     private $username;
 
@@ -59,9 +59,9 @@ class Users implements UserInterface
      * @ORM\Column(type="string", length=60)
      */
     #[
-        Groups(['write']),
-        Assert\NotBlank(message: "Vous devez saisir une adresse email !", groups: ['write']),
-        Assert\Email(message: "Le format de l'adresse n'est pas correcte.", groups: ['write'])
+        Groups(['user:write']),
+        Assert\NotBlank(message: "Vous devez saisir une adresse email !", groups: ['user:write']),
+        Assert\Email(message: "Le format de l'adresse n'est pas correcte.", groups: ['user:write'])
     ]
     private $email;
 
@@ -69,9 +69,9 @@ class Users implements UserInterface
      * @ORM\Column(type="string", length=64)
      */
     #[
-        Groups(['write']),
-        Assert\NotBlank(message: "Vous devez saisir un mot de passe", groups: ['write']),
-        Assert\Length(min: 12, max: 64, minMessage: "Vous devez saisir un mot de passe de minimum 12 caractères.", maxMessage: "Votre mot de passe ne peut dépasser 64 caractères.", groups: ['write'])
+        Groups(['user:write']),
+        Assert\NotBlank(message: "Vous devez saisir un mot de passe", groups: ['user:write']),
+        Assert\Length(min: 12, max: 64, minMessage: "Vous devez saisir un mot de passe de minimum 12 caractères.", maxMessage: "Votre mot de passe ne peut dépasser 64 caractères.", groups: ['user:write'])
     ]
     private $password;
 
@@ -79,7 +79,7 @@ class Users implements UserInterface
      * @ORM\Column(type="datetime")
      */
     #[
-        Groups(['write']),
+        Groups(['user:write']),
     ]
     private $modified_at;
 
@@ -87,7 +87,7 @@ class Users implements UserInterface
      * @ORM\Column(type="datetime")
      */
     #[
-        Groups(['write']),
+        Groups(['user:write']),
     ]
     private $created_at;
 
@@ -100,7 +100,7 @@ class Users implements UserInterface
      * @ORM\Column(type="smallint")
      */
     #[
-        Groups(['write']),
+        Groups(['user:write']),
     ]
     private $state;
 
@@ -118,6 +118,8 @@ class Users implements UserInterface
     {
         $this->posts = new ArrayCollection();
         $this->favoritesPosts = new ArrayCollection();
+        $this->created_at = new \DateTime();
+        $this->modified_at = new \DateTime();
     }
 
     public function getId(): ?int
@@ -234,7 +236,7 @@ class Users implements UserInterface
     public function removePost(Posts $post): self
     {
         if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
+            // set the owning side to null (unless aluser:ready changed)
             if ($post->getAuthor() === $this) {
                 $post->setAuthor(null);
             }
@@ -264,7 +266,7 @@ class Users implements UserInterface
     public function removeFavoritesPost(FavoritesPosts $favoritesPost): self
     {
         if ($this->favoritesPosts->removeElement($favoritesPost)) {
-            // set the owning side to null (unless already changed)
+            // set the owning side to null (unless aluser:ready changed)
             if ($favoritesPost->getUser() === $this) {
                 $favoritesPost->setUser(null);
             }

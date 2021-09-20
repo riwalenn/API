@@ -18,17 +18,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[
     ApiResource(
         collectionOperations: [
-            'get' => ['normalization_context' => ['groups' => 'read']],
+            'get' => ['normalization_context' => ['groups' => 'category:read']],
             'post',
         ],
         itemOperations: [
-            'get' => ['normalization_context' => ['groups' => 'read']],
+            'get' => ['normalization_context' => ['groups' => 'category:read']],
             'post',
             'put',
             'delete',
         ],
-        denormalizationContext: ['groups' => ['write'], 'enable_max_depth' => true,],
-        normalizationContext: ['groups' => ['read'], 'enable_max_depth' => true,],
+        denormalizationContext: ['groups' => ['category:write'], 'enable_max_depth' => true,],
+        normalizationContext: ['groups' => ['category:read'], 'enable_max_depth' => true,],
     )]
 class Categories
 {
@@ -43,9 +43,9 @@ class Categories
      * @ORM\Column(type="string", length=255)
      */
     #[
-        Groups(['read', 'write']),
-        Assert\NotBlank(message: "Vous devez saisir une catégorie", groups: ['write']),
-        Assert\Length(min: 3, max: 255, minMessage: "Votre catégorie doit faire au minimum 10 caractères.", maxMessage: "Votre catégorie ne peux excéder 255 caractères.", groups: ['write'])
+        Groups(['category:read', 'category:write', 'post:write']),
+        Assert\NotBlank(message: "Vous devez saisir une catégorie", groups: ['category:write', 'post:write']),
+        Assert\Length(min: 3, max: 255, minMessage: "Votre catégorie doit faire au minimum 10 caractères.", maxMessage: "Votre catégorie ne peux excéder 255 caractères.", groups: ['category:write', 'post:write'])
     ]
     private $value;
 
@@ -53,9 +53,9 @@ class Categories
      * @ORM\Column(type="string", length=255)
      */
     #[
-        Groups(['write']),
-        Assert\NotBlank(message: "Vous devez saisir une css", groups: ['write']),
-        Assert\Length(min: 3, max: 255, minMessage: "Votre css doit faire au minimum 10 caractères.", maxMessage: "Votre css ne peux excéder 255 caractères.", groups: ['write'])
+        Groups(['category:write', 'post:write']),
+        Assert\NotBlank(message: "Vous devez saisir une css", groups: ['category:write', 'post:write']),
+        Assert\Length(min: 3, max: 255, minMessage: "Votre css doit faire au minimum 10 caractères.", maxMessage: "Votre css ne peux excéder 255 caractères.", groups: ['category:write', 'post:write'])
     ]
     private $css;
 
@@ -63,9 +63,9 @@ class Categories
      * @ORM\Column(type="string", length=255)
      */
     #[
-        Groups(['write']),
-        Assert\NotBlank(message: "Vous devez saisir une couleur", groups: ['write']),
-        Assert\Length(min: 3, max: 255, minMessage: "Votre couleur doit faire au minimum 10 caractères.", maxMessage: "Votre couleur ne peux excéder 255 caractères.", groups: ['write'])
+        Groups(['category:write', 'post:write']),
+        Assert\NotBlank(message: "Vous devez saisir une couleur", groups: ['category:write', 'post:write']),
+        Assert\Length(min: 3, max: 255, minMessage: "Votre couleur doit faire au minimum 10 caractères.", maxMessage: "Votre couleur ne peux excéder 255 caractères.", groups: ['category:write', 'post:write'])
     ]
     private $color;
 
@@ -141,7 +141,7 @@ class Categories
     public function removePost(Posts $post): self
     {
         if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
+            // set the owning side to null (unless alcategory:ready changed)
             if ($post->getCategory() === $this) {
                 $post->setCategory(null);
             }

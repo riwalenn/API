@@ -15,17 +15,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[
     ApiResource(
         collectionOperations: [
-            'get' => ['normalization_context' => ['groups' => 'read']],
+            'get' => ['normalization_context' => ['groups' => 'fav:read']],
             'post',
         ],
         itemOperations: [
-            'get' => ['normalization_context' => ['groups' => 'read']],
+            'get' => ['normalization_context' => ['groups' => 'fav:read']],
             'post',
             'put',
             'delete',
         ],
-        denormalizationContext: ['groups' => ['write'], 'enable_max_depth' => true,],
-        normalizationContext: ['groups' => ['read'], 'enable_max_depth' => true,],
+        denormalizationContext: ['groups' => ['fav:write'], 'enable_max_depth' => true,],
+        normalizationContext: ['groups' => ['fav:read'], 'enable_max_depth' => true,],
     )]
 class FavoritesPosts
 {
@@ -35,7 +35,7 @@ class FavoritesPosts
      * @ORM\Column(type="integer")
      */
     #[
-        Groups(['read']),
+        Groups(['fav:read']),
     ]
     private $id;
 

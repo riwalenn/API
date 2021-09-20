@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\PostsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,18 +20,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[
     ApiResource(
         collectionOperations: [
-            'get' => ['normalization_context' => ['groups' => 'read']],
+            'get' => ['normalization_context' => ['groups' => 'post:read']],
             'post',
         ],
         itemOperations: [
-            'get' => ['normalization_context' => ['groups' => 'read']],
+            'get' => ['normalization_context' => ['groups' => 'post:read']],
             'post',
             'put',
             'delete',
         ],
-        denormalizationContext: ['groups' => ['write'], 'enable_max_depth' => true,],
-        normalizationContext: ['groups' => ['read'], 'enable_max_depth' => true,],
-    )]
+        denormalizationContext: ['groups' => ['post:write'], 'enable_max_depth' => true,],
+        normalizationContext: ['groups' => ['post:read'], 'enable_max_depth' => true,],
+        paginationItemsPerPage: 3,
+    ),
+ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'title' => 'partial'])]
 class Posts
 {
     /**
@@ -38,7 +42,7 @@ class Posts
      * @ORM\Column(type="integer")
      */
     #[
-        Groups(['read']),
+        Groups(['post:read']),
     ]
     private $id;
 
@@ -46,9 +50,9 @@ class Posts
      * @ORM\Column(type="string", length=255)
      */
     #[
-        Groups(['read', 'write']),
-        Assert\NotBlank(message: "Vous devez saisir un titre", groups: ['write']),
-        Assert\Length(min: 10, max: 255, minMessage: "Votre titre doit faire au minimum 10 caractères.", maxMessage: "Votre titre ne peux excéder 255 caractères.", groups: ['write'])
+        Groups(['post:read', 'post:write']),
+        Assert\NotBlank(message: "Vous devez saisir un titre", groups: ['post:write']),
+        Assert\Length(min: 10, max: 255, minMessage: "Votre titre doit faire au minimum 10 caractères.", maxMessage: "Votre titre ne peux excéder 255 caractères.", groups: ['post:write'])
     ]
     private $title;
 
@@ -56,9 +60,9 @@ class Posts
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     #[
-        Groups(['read', 'write']),
-        Assert\NotBlank(message: "Vous devez saisir un kicker", groups: ['write']),
-        Assert\Length(min: 10, max: 255, minMessage: "Votre kicker doit faire au minimum 10 caractères.", maxMessage: "Votre kicker ne peux excéder 255 caractères.", groups: ['write'])
+        Groups(['post:read', 'post:write']),
+        Assert\NotBlank(message: "Vous devez saisir un kicker", groups: ['post:write']),
+        Assert\Length(min: 10, max: 255, minMessage: "Votre kicker doit faire au minimum 10 caractères.", maxMessage: "Votre kicker ne peux excéder 255 caractères.", groups: ['post:write'])
     ]
     private $kicker;
 
@@ -67,7 +71,7 @@ class Posts
      * @ORM\JoinColumn(nullable=false)
      */
     #[
-        Groups(['read', 'write']),
+        Groups(['post:read', 'post:write']),
     ]
     private $author;
 
@@ -75,9 +79,9 @@ class Posts
      * @ORM\Column(type="text")
      */
     #[
-        Groups(['read', 'write']),
-        Assert\NotBlank(message: "Vous devez saisir un contenu", groups: ['write']),
-        Assert\Length(min: 10, minMessage: "Votre contenu doit faire au minimum 10 caractères.", groups: ['write'])
+        Groups(['post:read', 'post:write']),
+        Assert\NotBlank(message: "Vous devez saisir un contenu", groups: ['post:write']),
+        Assert\Length(min: 10, minMessage: "Votre contenu doit faire au minimum 10 caractères.", groups: ['post:write'])
     ]
     private $content;
 
@@ -85,7 +89,7 @@ class Posts
      * @ORM\Column(type="datetime")
      */
     #[
-        Groups(['read', 'write']),
+        Groups(['post:read', 'post:write']),
     ]
     private $created_at;
 
@@ -93,7 +97,7 @@ class Posts
      * @ORM\Column(type="datetime")
      */
     #[
-        Groups(['read', 'write']),
+        Groups(['post:read', 'post:write']),
     ]
     private $modified_at;
 
@@ -102,7 +106,8 @@ class Posts
      * @ORM\JoinColumn(nullable=false)
      */
     #[
-        Groups(['read', 'write']),
+        Groups(['post:read', 'post:write']),
+        Assert\Valid(),
     ]
     private $category;
 
@@ -110,7 +115,7 @@ class Posts
      * @ORM\Column(type="smallint")
      */
     #[
-        Groups(['write']),
+        Groups(['post:write']),
     ]
     private $state;
 
@@ -122,6 +127,8 @@ class Posts
     public function __construct()
     {
         $this->favoritesPosts = new ArrayCollection();
+        $this->created_at = new \DateTime();
+        $this->modified_at = new \DateTime();
     }
 
     public function getId(): ?int
@@ -246,7 +253,7 @@ class Posts
     public function removeFavoritesPost(FavoritesPosts $favoritesPost): self
     {
         if ($this->favoritesPosts->removeElement($favoritesPost)) {
-            // set the owning side to null (unless already changed)
+            // set the owning side to null (unless alpost:ready changed)
             if ($favoritesPost->getPost() === $this) {
                 $favoritesPost->setPost(null);
             }
