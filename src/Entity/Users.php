@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -26,6 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         itemOperations: [
             'get' => ['normalization_context' => ['groups' => 'read']],
+            'post',
             'put',
             'delete',
         ],
@@ -42,41 +42,53 @@ class Users implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read", "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur")
-     * @Groups({"read", "write"})
      */
+    #[
+        Groups(['read', 'write']),
+        Assert\Length(min: 10, max: 40, minMessage: "Vous devez saisir au moins 10 caractères", maxMessage: "Vous ne pouvez saisir que 40 caractères au maximum."),
+        Assert\NotBlank(message: "Vous devez saisir un nom d'utilisateur")
+    ]
     private $username;
 
     /**
      * @ORM\Column(type="string", length=60)
-     * @Assert\NotBlank(message="Vous devez saisir une adresse email.")
-     * @Assert\Email(message="Le format de l'adresse n'est pas correcte.")
-     * @Groups({"read", "write"})
      */
+    #[
+        Groups(['write']),
+        Assert\NotBlank(message: "Vous devez saisir une adresse email !"),
+        Assert\Email(message: "Le format de l'adresse n'est pas correcte.")
+    ]
     private $email;
 
     /**
      * @ORM\Column(type="string", length=64)
-     * @Assert\NotBlank(message="Vous devez saisir un mot de passe")
      */
+    #[
+        Groups(['write']),
+        Assert\NotBlank(message: "Vous devez saisir un mot de passe"),
+        Assert\Length(min: 12, max: 64, minMessage: "Vous devez saisir un mot de passe de minimum 12 caractères.", maxMessage: "Votre mot de passe ne peut dépasser 64 caractères.")
+    ]
     private $password;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"read", "write"})
      */
+    #[
+        Groups(['write']),
+    ]
     private $modified_at;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"read", "write"})
      */
+    #[
+        Groups(['write']),
+    ]
     private $created_at;
 
     /**
@@ -86,8 +98,10 @@ class Users implements UserInterface
 
     /**
      * @ORM\Column(type="smallint")
-     * @Groups({"read", "write"})
      */
+    #[
+        Groups(['write']),
+    ]
     private $state;
 
     /**

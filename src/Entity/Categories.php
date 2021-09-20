@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Categories
@@ -22,6 +23,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ],
         itemOperations: [
             'get' => ['normalization_context' => ['groups' => 'read']],
+            'post',
             'put',
             'delete',
         ],
@@ -34,26 +36,37 @@ class Categories
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read", "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "write"})
      */
+    #[
+        Groups(['read', 'write']),
+        Assert\NotBlank(message: "Vous devez saisir une catégorie"),
+        Assert\Length(min: 3, max: 255, minMessage: "Votre catégorie doit faire au minimum 10 caractères.", maxMessage: "Votre catégorie ne peux excéder 255 caractères.")
+    ]
     private $value;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "write"})
      */
+    #[
+        Groups(['write']),
+        Assert\NotBlank(message: "Vous devez saisir une css"),
+        Assert\Length(min: 3, max: 255, minMessage: "Votre css doit faire au minimum 10 caractères.", maxMessage: "Votre css ne peux excéder 255 caractères.")
+    ]
     private $css;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "write"})
      */
+    #[
+        Groups(['write']),
+        Assert\NotBlank(message: "Vous devez saisir une couleur"),
+        Assert\Length(min: 3, max: 255, minMessage: "Votre couleur doit faire au minimum 10 caractères.", maxMessage: "Votre couleur ne peux excéder 255 caractères.")
+    ]
     private $color;
 
     /**

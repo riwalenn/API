@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ],
         itemOperations: [
             'get' => ['normalization_context' => ['groups' => 'read']],
+            'post',
             'put',
             'delete',
         ],
@@ -32,8 +33,10 @@ class FavoritesPosts
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read", "write"})
      */
+    #[
+        Groups(['read']),
+    ]
     private $id;
 
     /**
