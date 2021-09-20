@@ -44,8 +44,8 @@ class Categories
      */
     #[
         Groups(['read', 'write']),
-        Assert\NotBlank(message: "Vous devez saisir une catégorie"),
-        Assert\Length(min: 3, max: 255, minMessage: "Votre catégorie doit faire au minimum 10 caractères.", maxMessage: "Votre catégorie ne peux excéder 255 caractères.")
+        Assert\NotBlank(message: "Vous devez saisir une catégorie", groups: ['write']),
+        Assert\Length(min: 3, max: 255, minMessage: "Votre catégorie doit faire au minimum 10 caractères.", maxMessage: "Votre catégorie ne peux excéder 255 caractères.", groups: ['write'])
     ]
     private $value;
 
@@ -54,8 +54,8 @@ class Categories
      */
     #[
         Groups(['write']),
-        Assert\NotBlank(message: "Vous devez saisir une css"),
-        Assert\Length(min: 3, max: 255, minMessage: "Votre css doit faire au minimum 10 caractères.", maxMessage: "Votre css ne peux excéder 255 caractères.")
+        Assert\NotBlank(message: "Vous devez saisir une css", groups: ['write']),
+        Assert\Length(min: 3, max: 255, minMessage: "Votre css doit faire au minimum 10 caractères.", maxMessage: "Votre css ne peux excéder 255 caractères.", groups: ['write'])
     ]
     private $css;
 
@@ -64,8 +64,8 @@ class Categories
      */
     #[
         Groups(['write']),
-        Assert\NotBlank(message: "Vous devez saisir une couleur"),
-        Assert\Length(min: 3, max: 255, minMessage: "Votre couleur doit faire au minimum 10 caractères.", maxMessage: "Votre couleur ne peux excéder 255 caractères.")
+        Assert\NotBlank(message: "Vous devez saisir une couleur", groups: ['write']),
+        Assert\Length(min: 3, max: 255, minMessage: "Votre couleur doit faire au minimum 10 caractères.", maxMessage: "Votre couleur ne peux excéder 255 caractères.", groups: ['write'])
     ]
     private $color;
 

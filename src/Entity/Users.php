@@ -50,8 +50,8 @@ class Users implements UserInterface
      */
     #[
         Groups(['read', 'write']),
-        Assert\Length(min: 10, max: 40, minMessage: "Vous devez saisir au moins 10 caractères", maxMessage: "Vous ne pouvez saisir que 40 caractères au maximum."),
-        Assert\NotBlank(message: "Vous devez saisir un nom d'utilisateur")
+        Assert\Length(min: 10, max: 40, minMessage: "Vous devez saisir au moins 10 caractères", maxMessage: "Vous ne pouvez saisir que 40 caractères au maximum.", groups: ['write']),
+        Assert\NotBlank(message: "Vous devez saisir un nom d'utilisateur", groups: ['write'])
     ]
     private $username;
 
@@ -60,8 +60,8 @@ class Users implements UserInterface
      */
     #[
         Groups(['write']),
-        Assert\NotBlank(message: "Vous devez saisir une adresse email !"),
-        Assert\Email(message: "Le format de l'adresse n'est pas correcte.")
+        Assert\NotBlank(message: "Vous devez saisir une adresse email !", groups: ['write']),
+        Assert\Email(message: "Le format de l'adresse n'est pas correcte.", groups: ['write'])
     ]
     private $email;
 
@@ -70,8 +70,8 @@ class Users implements UserInterface
      */
     #[
         Groups(['write']),
-        Assert\NotBlank(message: "Vous devez saisir un mot de passe"),
-        Assert\Length(min: 12, max: 64, minMessage: "Vous devez saisir un mot de passe de minimum 12 caractères.", maxMessage: "Votre mot de passe ne peut dépasser 64 caractères.")
+        Assert\NotBlank(message: "Vous devez saisir un mot de passe", groups: ['write']),
+        Assert\Length(min: 12, max: 64, minMessage: "Vous devez saisir un mot de passe de minimum 12 caractères.", maxMessage: "Votre mot de passe ne peut dépasser 64 caractères.", groups: ['write'])
     ]
     private $password;
 

@@ -47,8 +47,8 @@ class Posts
      */
     #[
         Groups(['read', 'write']),
-        Assert\NotBlank(message: "Vous devez saisir un titre"),
-        Assert\Length(min: 10, max: 255, minMessage: "Votre titre doit faire au minimum 10 caractères.", maxMessage: "Votre titre ne peux excéder 255 caractères.")
+        Assert\NotBlank(message: "Vous devez saisir un titre", groups: ['write']),
+        Assert\Length(min: 10, max: 255, minMessage: "Votre titre doit faire au minimum 10 caractères.", maxMessage: "Votre titre ne peux excéder 255 caractères.", groups: ['write'])
     ]
     private $title;
 
@@ -57,8 +57,8 @@ class Posts
      */
     #[
         Groups(['read', 'write']),
-        Assert\NotBlank(message: "Vous devez saisir un kicker"),
-        Assert\Length(min: 10, max: 255, minMessage: "Votre kicker doit faire au minimum 10 caractères.", maxMessage: "Votre kicker ne peux excéder 255 caractères.")
+        Assert\NotBlank(message: "Vous devez saisir un kicker", groups: ['write']),
+        Assert\Length(min: 10, max: 255, minMessage: "Votre kicker doit faire au minimum 10 caractères.", maxMessage: "Votre kicker ne peux excéder 255 caractères.", groups: ['write'])
     ]
     private $kicker;
 
@@ -76,8 +76,8 @@ class Posts
      */
     #[
         Groups(['read', 'write']),
-        Assert\NotBlank(message: "Vous devez saisir un contenu"),
-        Assert\Length(min: 10, minMessage: "Votre contenu doit faire au minimum 10 caractères.")
+        Assert\NotBlank(message: "Vous devez saisir un contenu", groups: ['write']),
+        Assert\Length(min: 10, minMessage: "Votre contenu doit faire au minimum 10 caractères.", groups: ['write'])
     ]
     private $content;
 
