@@ -23,7 +23,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         itemOperations: [
             'get' => ['normalization_context' => ['groups' => 'category:read']],
-            'post',
             'put',
             'delete',
         ],

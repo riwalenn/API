@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\PostStateController;
 use App\Repository\PostsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,9 +26,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         itemOperations: [
             'get' => ['normalization_context' => ['groups' => 'post:read']],
-            'post',
             'put',
             'delete',
+            'publish' => [
+                'method' => 'POST',
+                'path' => '/posts/{id}/publish',
+                'controller' => PostStateController::class
+            ],
         ],
         denormalizationContext: ['groups' => ['post:write'], 'enable_max_depth' => true,],
         normalizationContext: ['groups' => ['post:read'], 'enable_max_depth' => true,],
@@ -220,12 +225,12 @@ class Posts
         return $this;
     }
 
-    public function getState(): ?int
+    public function getState(): ?bool
     {
         return $this->state;
     }
 
-    public function setState(int $state): self
+    public function setState(bool $state): self
     {
         $this->state = $state;
 

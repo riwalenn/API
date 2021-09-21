@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Controller\UserStateController;
 use App\Repository\UsersRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,9 +26,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         itemOperations: [
             'get' => ['normalization_context' => ['groups' => 'user:read']],
-            'post',
             'put',
             'delete',
+            'validation' => [
+              'method' => 'POST',
+              'path' => '/users/{id}/validation',
+              'controller' => UserStateController::class
+            ],
         ],
         denormalizationContext: ['groups' => ['user:write'], 'enable_max_depth' => true,],
         normalizationContext: ['groups' => ['user:read'], 'enable_max_depth' => true,],
@@ -203,12 +208,12 @@ class Users implements UserInterface
         return $this;
     }
 
-    public function getState(): ?int
+    public function getState(): ?bool
     {
         return $this->state;
     }
 
-    public function setState(int $state): self
+    public function setState(bool $state): self
     {
         $this->state = $state;
 
