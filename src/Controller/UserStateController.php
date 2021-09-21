@@ -8,6 +8,6 @@ class UserStateController
 {
     public function __invoke(Users $data): Users
     {
-        return $data->setState((bool)$data);
+        return $data->setState(true);
     }
 }

@@ -9,6 +9,6 @@ class PostStateController
 
     public function __invoke(Posts $data): Posts
     {
-        return $data->setState((bool)$data);
+        return $data->setState(true);
     }
 }
