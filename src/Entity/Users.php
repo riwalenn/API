@@ -97,7 +97,7 @@ class Users implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="boolean", options={"default": "0"})
      */
     #[
         Groups(['user:write']),

@@ -112,7 +112,7 @@ class Posts
     private $category;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="boolean", options={"default": "0"})
      */
     #[
         Groups(['post:write']),
