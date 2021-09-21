@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use App\Controller\PostStateController;
 use App\Repository\PostsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -46,7 +49,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         denormalizationContext: ['groups' => ['post:write'], 'enable_max_depth' => true,],
         normalizationContext: ['groups' => ['post:read'], 'enable_max_depth' => true,],
-        paginationItemsPerPage: 3,
+        paginationItemsPerPage: 25,
     ),
 ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'title' => 'partial'])]
 class Posts
@@ -123,6 +126,7 @@ class Posts
     #[
         Groups(['post:read', 'post:write']),
         Assert\Valid(),
+        ApiFilter(SearchFilter::class, properties: ["category" => "exact"])
     ]
     private $category;
 
@@ -130,7 +134,9 @@ class Posts
      * @ORM\Column(type="boolean", options={"default": "0"})
      */
     #[
-        Groups(['post:write']),
+        Groups(['post:read','post:write']),
+        ApiProperty(openapiContext: ['type' => 'boolean', 'description' => 'Publié ou non publié']),
+        ApiFilter(BooleanFilter::class, properties: ['state'])
     ]
     private $state;
 
