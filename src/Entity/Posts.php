@@ -31,7 +31,17 @@ use Symfony\Component\Validator\Constraints as Assert;
             'publish' => [
                 'method' => 'POST',
                 'path' => '/posts/{id}/publish',
-                'controller' => PostStateController::class
+                'controller' => PostStateController::class,
+                'openapi_context' => [
+                    'summary' => 'Publish a posts resource.',
+                    'requestBody' => [
+                        'content' => [
+                            'application/json' => [
+                                'schema' => []
+                            ]
+                        ]
+                    ]
+                ]
             ],
         ],
         denormalizationContext: ['groups' => ['post:write'], 'enable_max_depth' => true,],

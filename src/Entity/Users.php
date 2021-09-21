@@ -31,7 +31,17 @@ use Symfony\Component\Validator\Constraints as Assert;
             'validation' => [
               'method' => 'POST',
               'path' => '/users/{id}/validation',
-              'controller' => UserStateController::class
+              'controller' => UserStateController::class,
+                'openapi_context' => [
+                    'summary' => 'Approve a users resource.',
+                    'requestBody' => [
+                        'content' => [
+                            'application/json' => [
+                                'schema' => []
+                            ]
+                        ]
+                    ]
+                ]
             ],
         ],
         denormalizationContext: ['groups' => ['user:write'], 'enable_max_depth' => true,],
