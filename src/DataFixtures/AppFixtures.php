@@ -6,16 +6,16 @@ use App\Entity\Users;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-    private $passwordEncoder;
+    private $passwordHasher;
     private $manager;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
-        $this->passwordEncoder = $passwordEncoder;
+        $this->passwordHasher = $passwordHasher;
         $this->faker = Factory::create('fr_FR');
     }
 
@@ -31,12 +31,12 @@ class AppFixtures extends Fixture
 
     public function loadUsers()
     {
-        for ($i = 1; $i < 300; $i++) {
+        for ($i = 1; $i < 100; $i++) {
             $user = new Users();
             $username = $this->faker->userName;
             $user->setUsername($username)
                 ->setEmail($this->faker->email)
-                ->setPassword($this->passwordEncoder->encodePassword($user, $username))
+                ->setPassword($this->passwordHasher->hashPassword($user, $username))
                 ->setRoles([Users::ROLE_USER])
                 ->setState($this->faker->boolean)
                 ->setCreatedAt(new \DateTime())
@@ -50,7 +50,7 @@ class AppFixtures extends Fixture
         $user = new Users();
         $user->setUsername('admin')
                 ->setEmail('admin@gmail.com')
-                ->setPassword($this->passwordEncoder->encodePassword($user, "admin"))
+                ->setPassword($this->passwordHasher->hashPassword($user,"admin"))
                 ->setRoles([Users::ROLE_ADMIN])
                 ->setState(1)
                 ->setCreatedAt(new \DateTime())
@@ -63,7 +63,7 @@ class AppFixtures extends Fixture
         $user = new Users();
         $user->setUsername('user')
             ->setEmail('user@gmail.com')
-            ->setPassword($this->passwordEncoder->encodePassword($user, "user"))
+            ->setPassword($this->passwordHasher->hashPassword($user,"user"))
             ->setRoles([Users::ROLE_USER])
             ->setState(1)
             ->setCreatedAt(new \DateTime())

@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -47,7 +49,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         denormalizationContext: ['groups' => ['user:write'], 'enable_max_depth' => true,],
         normalizationContext: ['groups' => ['user:read'], 'enable_max_depth' => true,],
     )]
-class Users implements UserInterface
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_ADMIN = 'ROLE_ADMIN';
     const ROLE_USER = 'ROLE_USER';
