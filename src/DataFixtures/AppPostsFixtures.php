@@ -57,7 +57,7 @@ class AppPostsFixtures extends Fixture implements DependentFixtureInterface
         $array = [$category->getId(), $category2->getId(), $category3->getId()];
 
         foreach ($users as $user) {
-            for ($i = 1; $i < 3; $i++) {
+            for ($i = 1; $i < 5; $i++) {
                 $category = array_rand(array_flip($array));
                 $id_category = $this->categoriesRepository->findOneBy(['id' => $category]);
                 $post = new Posts();
